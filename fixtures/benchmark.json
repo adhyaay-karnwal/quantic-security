@@ -1,0 +1,42 @@
+{
+  "synthetic": true,
+  "description": "Fixed deterministic fixture replay. It does not execute rules against repositories or connect to a provider.",
+  "cases": [
+    {
+      "case_id": "BENCH-001",
+      "label": "Shell command interpolation",
+      "expected_rule_ids": ["PY-UNTRUSTED-SHELL-001"],
+      "observed_rule_ids": ["PY-UNTRUSTED-SHELL-001"]
+    },
+    {
+      "case_id": "BENCH-002",
+      "label": "Public object storage",
+      "expected_rule_ids": ["IAC-PUBLIC-OBJECT-002"],
+      "observed_rule_ids": ["IAC-PUBLIC-OBJECT-002"]
+    },
+    {
+      "case_id": "BENCH-003",
+      "label": "SQL string concatenation",
+      "expected_rule_ids": ["PY-SQL-CONCAT-004"],
+      "observed_rule_ids": ["PY-SQL-CONCAT-004"]
+    },
+    {
+      "case_id": "BENCH-004",
+      "label": "Mutable CI action reference",
+      "expected_rule_ids": ["CI-UNPINNED-ACTION-003"],
+      "observed_rule_ids": ["CI-UNPINNED-ACTION-003"]
+    },
+    {
+      "case_id": "BENCH-005",
+      "label": "Clean fixture false positive check",
+      "expected_rule_ids": [],
+      "observed_rule_ids": ["JS-DEBUG-LOG-007"]
+    },
+    {
+      "case_id": "BENCH-006",
+      "label": "Regression: debug logging retained",
+      "expected_rule_ids": ["JS-DEBUG-LOG-007"],
+      "observed_rule_ids": []
+    }
+  ]
+}

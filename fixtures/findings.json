@@ -1,0 +1,102 @@
+{
+  "synthetic": true,
+  "notice": "Every repository, file, line, excerpt, and finding below is invented fixture data.",
+  "findings": [
+    {
+      "finding_id": "SEC-1042",
+      "rule_id": "PY-UNTRUSTED-SHELL-001",
+      "title": "Untrusted search text reaches a shell command",
+      "severity": "critical",
+      "confidence": 0.96,
+      "description": "Request-controlled text is interpolated into a shell command. A safer argument-vector call removes shell parsing and constrains the operation to the intended search executable.",
+      "repository": "orchard-api",
+      "recommendation": "Replace the shell string with a fixed executable and validated argument list; keep the allowed search scope explicit.",
+      "synthetic": true,
+      "evidence": [
+        {
+          "evidence_id": "EV-1042-A",
+          "source": "static-rule-fixture",
+          "source_ref": "fixture-4d92b1a · PY-UNTRUSTED-SHELL-001",
+          "path": "src/search.py",
+          "line_start": 88,
+          "line_end": 88,
+          "excerpt": "query = request.args.get(\"q\", \"\")",
+          "excerpt_sha256": "e822dc837ad36e4600fc77dc4d073fa9c369b30f3a83f191d2139cea1ebe4442",
+          "synthetic": true
+        }
+      ]
+    },
+    {
+      "finding_id": "SEC-1037",
+      "rule_id": "IAC-PUBLIC-OBJECT-002",
+      "title": "Object storage allows public reads",
+      "severity": "high",
+      "confidence": 0.89,
+      "description": "The synthetic infrastructure fixture enables anonymous reads. Confirm intended access patterns, then require an explicit authenticated principal.",
+      "repository": "orchard-api",
+      "recommendation": "Disable public access at the bucket and account levels; add a regression assertion for the intended principal boundary.",
+      "synthetic": true,
+      "evidence": [
+        {
+          "evidence_id": "EV-1037-A",
+          "source": "static-rule-fixture",
+          "source_ref": "fixture-4d92b1a · IAC-PUBLIC-OBJECT-002",
+          "path": "infra/storage.tf",
+          "line_start": 24,
+          "line_end": 24,
+          "excerpt": "public_read = true",
+          "excerpt_sha256": "86cdb1b32f25cc6ea4af0d386b88eb229bfdb021a5f85b43b9b26d26615a0b50",
+          "synthetic": true
+        }
+      ]
+    },
+    {
+      "finding_id": "SEC-1033",
+      "rule_id": "PY-SQL-CONCAT-004",
+      "title": "SQL query is assembled with string concatenation",
+      "severity": "high",
+      "confidence": 0.93,
+      "description": "The fixture query inserts a value into SQL source text. Parameterized queries keep user input in the data channel rather than executable syntax.",
+      "repository": "atlas-web",
+      "recommendation": "Use a parameterized query and add a regression case containing SQL punctuation as ordinary input.",
+      "synthetic": true,
+      "evidence": [
+        {
+          "evidence_id": "EV-1033-A",
+          "source": "static-rule-fixture",
+          "source_ref": "fixture-7a13c02 · PY-SQL-CONCAT-004",
+          "path": "app/users.py",
+          "line_start": 51,
+          "line_end": 51,
+          "excerpt": "cursor.execute(\"SELECT * FROM users WHERE name = '\" + name + \"'\")",
+          "excerpt_sha256": "6cfd405bcd388d1b46901e19af2d995310d06ec594504184f14a526ef6131816",
+          "synthetic": true
+        }
+      ]
+    },
+    {
+      "finding_id": "SEC-1021",
+      "rule_id": "CI-UNPINNED-ACTION-003",
+      "title": "Build action is referenced by a mutable tag",
+      "severity": "medium",
+      "confidence": 0.84,
+      "description": "The workflow fixture references an action tag that may change. Pinning a verified commit makes the dependency input stable and reviewable.",
+      "repository": "atlas-web",
+      "recommendation": "Pin the action to a reviewed full commit digest and document the version beside the reference.",
+      "synthetic": true,
+      "evidence": [
+        {
+          "evidence_id": "EV-1021-A",
+          "source": "static-rule-fixture",
+          "source_ref": "fixture-7a13c02 · CI-UNPINNED-ACTION-003",
+          "path": ".github/workflows/test.yml",
+          "line_start": 16,
+          "line_end": 16,
+          "excerpt": "uses: acme/build-action@v2",
+          "excerpt_sha256": "14a66553048f67aed3d6f6ddeb0de49c8c716ea465d736c5cc513475a55bc9a1",
+          "synthetic": true
+        }
+      ]
+    }
+  ]
+}
