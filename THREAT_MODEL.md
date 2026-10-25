@@ -28,7 +28,7 @@ Nectar Security demonstrates one reviewable loop: explicitly selected synthetic 
 
 ## Data handling
 
-All supplied examples are local repository fixtures. The UI fetches only the two committed JSON fixture files from the local static server. The Python benchmark reads the committed JSON file. Neither component makes outbound network requests. Browser local storage is limited to the user-selected fixture repository names and mock approval status; clearing site data resets the prototype.
+All supplied examples are local repository fixtures. The UI fetches only the two committed JSON fixture files from the local static server. The Python benchmark reads the committed JSON file. Neither component makes outbound network requests. Browser local storage is limited to the user-selected fixture repository names; the mock approval status is transient page state. Clearing site data resets the saved scope.
 
 ## Before any production use
 

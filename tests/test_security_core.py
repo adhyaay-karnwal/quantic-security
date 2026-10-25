@@ -20,6 +20,12 @@ class FindingSchemaTests(unittest.TestCase):
         self.assertEqual(finding.evidence[0].path, "src/search.py")
         self.assertEqual(Finding.from_dict(finding.to_dict()), finding)
 
+    def test_all_committed_fixture_findings_validate_as_synthetic(self):
+        raw_findings = json.loads((ROOT / "fixtures" / "findings.json").read_text())["findings"]
+        findings = [Finding.from_dict(item) for item in raw_findings]
+        self.assertEqual(len(findings), 4)
+        self.assertTrue(all(finding.synthetic for finding in findings))
+
     def test_evidence_digest_mismatch_is_rejected(self):
         evidence = dict(self.raw["evidence"][0], excerpt_sha256="0" * 64)
         with self.assertRaisesRegex(ValidationError, "does not match"):
@@ -29,6 +35,13 @@ class FindingSchemaTests(unittest.TestCase):
         evidence = dict(self.raw["evidence"][0], path="../outside.py")
         with self.assertRaisesRegex(ValidationError, "repository-relative"):
             Evidence.from_dict(evidence)
+
+    def test_non_normalized_and_windows_paths_are_rejected(self):
+        for path in ("src//search.py", "src\\\\search.py"):
+            with self.subTest(path=path):
+                evidence = dict(self.raw["evidence"][0], path=path)
+                with self.assertRaisesRegex(ValidationError, "repository-relative"):
+                    Evidence.from_dict(evidence)
 
     def test_confidence_outside_unit_interval_is_rejected(self):
         with self.assertRaisesRegex(ValidationError, "confidence"):
@@ -69,7 +82,13 @@ class CapabilityGateTests(unittest.TestCase):
     def test_matching_explicit_approval_allows_only_that_write(self):
         token = ApprovalToken("approval-2", Operation.WRITE, "orchard-api", "reviewer")
         self.assertTrue(authorize(self.policy, Operation.WRITE, "orchard-api", token).allowed)
-        self.assertFalse(authorize(self.policy, Operation.READ, "orchard-api", token).reason == "explicit_approval")
+        self.assertEqual(authorize(self.policy, Operation.READ, "orchard-api", token).reason, "in_scope_read")
+
+    def test_malformed_approval_fails_closed(self):
+        token = ApprovalToken(None, Operation.WRITE, "orchard-api", None)
+        decision = authorize(self.policy, Operation.WRITE, "orchard-api", token)
+        self.assertFalse(decision.allowed)
+        self.assertEqual(decision.reason, "approval_mismatch")
 
     def test_unapproved_and_unsupported_operations_fail_closed(self):
         token = ApprovalToken("approval-3", Operation.WRITE, "orchard-api", "reviewer", approved=False)

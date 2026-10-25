@@ -65,11 +65,20 @@ def authorize(
             False,
             "read_only_by_default" if policy.read_only else "approval_required",
         )
+    if not isinstance(approval, ApprovalToken):
+        return AuthorizationDecision(False, "approval_mismatch")
+    try:
+        approved_operation = Operation(approval.operation)
+    except (TypeError, ValueError):
+        return AuthorizationDecision(False, "approval_mismatch")
     if (
-        not approval.approved
+        not isinstance(approval.approved, bool)
+        or not approval.approved
+        or not isinstance(approval.token_id, str)
         or not approval.token_id.strip()
+        or not isinstance(approval.approved_by, str)
         or not approval.approved_by.strip()
-        or approval.operation is not operation
+        or approved_operation is not operation
         or approval.resource != resource
     ):
         return AuthorizationDecision(False, "approval_mismatch")

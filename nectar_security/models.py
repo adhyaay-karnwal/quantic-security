@@ -43,7 +43,7 @@ class Evidence:
         for field in ("evidence_id", "source", "source_ref", "path", "excerpt"):
             _text(getattr(self, field), field)
         path = PurePosixPath(self.path)
-        if path.is_absolute() or ".." in path.parts or str(path) in ("", "."):
+        if path.is_absolute() or ".." in path.parts or str(path) in ("", ".") or str(path) != self.path or "\\" in self.path:
             raise ValidationError("path must be a normalized repository-relative path")
         if not isinstance(self.line_start, int) or isinstance(self.line_start, bool) or self.line_start < 1:
             raise ValidationError("line_start must be a positive integer")
